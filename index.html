@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Yaana | Prince</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300&family=Pinyon+Script&family=Playfair+Display:italic,wght@0,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --deep-red: #4a0404;
+            --soft-red: #ff4d4d;
+            --neon-glow: #ff2d55;
+            --glass: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Overlay Entrance */
+        #entry-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #2a0202 0%, #000 100%);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 2s ease;
+        }
+
+        .enter-btn {
+            background: none;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            padding: 15px 40px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            cursor: pointer;
+            border-radius: 50px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            transition: 0.5s;
+        }
+
+        .enter-btn:hover {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 40px var(--gold);
+        }
+
+        /* Background Effects */
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .bokeh {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.2;
+            animation: drift 25s infinite linear;
+        }
+
+        /* Header & Text */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .neon-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 10vw, 7rem);
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px var(--neon-glow), 0 0 40px var(--neon-glow);
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite alternate;
+        }
+
+        /* Cinematic Frame */
+        .frame {
+            position: relative;
+            padding: 12px;
+            background: linear-gradient(45deg, #d4af37, #5e4d1a, #b8860b);
+            border-radius: 8px;
+            box-shadow: 0 0 60px rgba(212, 175, 55, 0.4);
+            margin: 40px auto;
+            max-width: 350px;
+            transition: 1s;
+        }
+
+        .frame img {
+            width: 100%;
+            display: block;
+            border-radius: 4px;
+            filter: contrast(1.1) brightness(0.9);
+        }
+
+        /* The Letter Container */
+        .content-wrap {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .letter-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            padding: 60px;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            font-family: 'Pinyon Script', cursive;
+            font-size: 2.2rem;
+            line-height: 1.8;
+            color: #fefefe;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            margin-bottom: 100px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: 2s all ease;
+        }
+
+        .letter-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .letter-card p { margin-bottom: 2rem; }
+
+        .highlight {
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.6rem;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Elements */
+        .petal, .heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .signature {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        /* Scroll Progress Bar */
+        #progress {
+            position: fixed;
+            bottom: 0; left: 0; height: 4px;
+            background: var(--gold);
+            width: 0%;
+            z-index: 1001;
+        }
+
+        /* Animations */
+        @keyframes drift {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(100px, 100px) rotate(180deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            from { text-shadow: 0 0 10px #fff, 0 0 20px var(--neon-glow); }
+            to { text-shadow: 0 0 20px #fff, 0 0 50px var(--neon-glow), 0 0 10px var(--gold); }
+        }
+
+        @media (max-width: 600px) {
+            .letter-card { padding: 30px; font-size: 1.5rem; }
+            .neon-text { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Entrance Screen -->
+    <div id="entry-overlay">
+        <button class="enter-btn" onclick="startExperience()">Open My Heart</button>
+        <p style="margin-top: 20px; color: var(--gold); opacity: 0.6; letter-spacing: 2px;">Turn up the volume</p>
+    </div>
+
+    <!-- Background Elements -->
+    <div class="bg-layer" id="bokeh-wrap"></div>
+    <div id="progress"></div>
+
+    <!-- Music -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Section 1: Intro -->
+    <header>
+        <h1 class="neon-text">I’m Sorry My Yaana</h1>
+        <div class="frame">
+            <img src="https://i.ibb.co/prP58RNP/file-000000006ddc72099f8ea46508d39893.png" alt="Yaana">
+        </div>
+        <p style="font-style: italic; opacity: 0.7; letter-spacing: 5px; margin-top: 20px;">SCROLLING DOWN FOR YOU...</p>
+    </header>
+
+    <!-- Section 2: The Letter -->
+    <div class="content-wrap">
+        <div class="letter-card" id="letter">
+            <p>My Dearest Yaana,</p>
+            
+            <p>I know you’re angry, and I know my silence hurt you. I want you to know that I didn’t reply not because I don’t care, but because I was trapped in things I couldn't avoid. </p>
+            
+            <p>But being busy is no excuse for making the most important person in my life feel neglected. Even in those moments of silence, <span style="color: var(--gold);">you were the only thought in my mind.</span></p>
+            
+            <p>I hate that I caused a frown on your beautiful face. I hate that I made you feel like you weren't a priority. You are my world, my peace, and my greatest happiness.</p>
+            
+            <p>I know I’m not perfect, but I promise to try harder for us. I promise to hold your hand through the misunderstandings and never let go.</p>
+            
+            <p>Please forgive me, Yaana. Every heartbeat of mine says your name. I’m truly, deeply sorry for hurting you.</p>
+
+            <p style="text-align: center; font-size: 3rem; color: var(--gold);">"You mean everything to me."</p>
+
+            <div class="signature">Love from Prince ❤️</div>
+        </div>
+
+        <!-- Final Photo Appearance -->
+        <div class="frame" style="margin-top: 50px; transform: scale(1.1);">
+            <img src="https://i.ibb.co/prP58RNP/file-000000006ddc72099f8ea46508d39893.png" alt="Yaana Always">
+            <p style="text-align: center; padding: 15px; font-family: 'Great Vibes'; font-size: 1.5rem;">Forever Yours.</p>
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        const overlay = document.getElementById('entry-overlay');
+        const letter = document.getElementById('letter');
+
+        function startExperience() {
+            // Start Music
+            music.play();
+            
+            // Hide Overlay
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 2000);
+
+            // Trigger Animations
+            createBokeh();
+            setInterval(createPetal, 500);
+            setInterval(createHeart, 800);
+
+            // Trigger Auto-Scroll after a short delay
+            setTimeout(() => {
+                autoScroll(0.8); // 0.8 is the speed. Increase for faster scroll.
+            }, 3000);
+        }
+
+        // Smooth Auto-Scroll Engine
+        function autoScroll(speed) {
+            function step() {
+                window.scrollBy(0, speed);
+                
+                // Update progress bar
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById("progress").style.width = scrolled + "%";
+
+                // Reveal letter when in view
+                const rect = letter.getBoundingClientRect();
+                if(rect.top < window.innerHeight * 0.8) {
+                    letter.classList.add('reveal');
+                    letter.style.opacity = "1";
+                    letter.style.transform = "translateY(0)";
+                }
+
+                if ((window.innerHeight + window.scrollY) < document.body.offsetHeight) {
+                    requestAnimationFrame(step);
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function createBokeh() {
+            const wrap = document.getElementById('bokeh-wrap');
+            for (let i = 0; i < 20; i++) {
+                const b = document.createElement('div');
+                b.className = 'bokeh';
+                const size = Math.random() * 400 + 100;
+                b.style.width = size + 'px';
+                b.style.height = size + 'px';
+                b.style.left = Math.random() * 100 + '%';
+                b.style.top = Math.random() * 100 + '%';
+                b.style.background = Math.random() > 0.5 ? 'var(--deep-red)' : 'var(--gold)';
+                b.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                wrap.appendChild(b);
+            }
+        }
+
+        function createPetal() {
+            const p = document.createElement('div');
+            p.className = 'petal';
+            p.innerHTML = '🌸';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.top = '-50px';
+            p.style.fontSize = Math.random() * 20 + 10 + 'px';
+            p.style.animation = `fall ${Math.random() * 10 + 5}s linear forwards`;
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 12000);
+        }
+
+        function createHeart() {
+            const h = document.createElement('div');
+            h.className = 'heart';
+            h.innerHTML = '❤️';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.bottom = '-50px';
+            h.style.opacity = '0.4';
+            h.style.fontSize = Math.random() * 15 + 5 + 'px';
+            h.style.animation = `rise ${Math.random() * 10 + 5}s linear forwards`;
+            
+            // Reusing fall animation logic but inverted
+            h.animate([
+                { transform: 'translateY(0)', opacity: 0 },
+                { opacity: 0.6, offset: 0.2 },
+                { transform: 'translateY(-110vh)', opacity: 0 }
+            ], {
+                duration: Math.random() * 5000 + 5000,
+                easing: 'linear'
+            });
+            
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 10000);
+        }
+    </script>
+</body>
+  </html>
